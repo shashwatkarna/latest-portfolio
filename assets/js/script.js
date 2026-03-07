@@ -18,21 +18,63 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Secret Section Toggle
+    // Secret Section Toggle & Obfuscated Payload Decoder
     const secretTrigger = document.getElementById('secret-trigger');
     const secretSection = document.getElementById('secret-section');
+    const secretLocked = document.getElementById('secret-locked-content');
+    const secretUnlocked = document.getElementById('secret-unlocked-content');
+    const secretInput = document.getElementById('secret-mini-key');
 
     if (secretTrigger && secretSection) {
         secretTrigger.addEventListener('click', () => {
             secretSection.classList.toggle('active');
 
             if (secretSection.classList.contains('active')) {
-                // Scroll to secret section with a slight delay for glitch effect
                 setTimeout(() => {
                     secretSection.scrollIntoView({ behavior: 'smooth' });
+                    if (secretInput && secretLocked && secretLocked.style.display !== 'none') {
+                        secretInput.focus();
+                    }
                 }, 100);
             }
         });
+    }
+
+    if (secretInput && secretLocked && secretUnlocked) {
+        secretInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                if (secretInput.value.trim().toUpperCase() === 'SHASHWAT03') {
+                    secretLocked.style.display = 'none';
+                    secretUnlocked.style.display = 'block';
+                    
+                    // Decrypt and Inject HTML securely
+                    if (!secretUnlocked.innerHTML.trim() || secretUnlocked.innerHTML.includes('OBFUSCATED_PAYLOAD')) {
+                        secretUnlocked.innerHTML = atob(SECURE_PAYLOAD);
+                        if (typeof initSecretPlayer === 'function') setTimeout(initSecretPlayer, 100);
+                    }
+
+                    sessionStorage.setItem('shashwat_unlocked', 'true');
+                    // Ensure logger is available globally
+                    if (typeof logActivity === 'function') logActivity('SECURITY: SUBTLE_ACCESS_GRANTED');
+                } else {
+                    secretInput.value = '';
+                    secretInput.parentElement.style.animation = 'glitch-anim 0.2s 3';
+                    setTimeout(() => secretInput.parentElement.style.animation = '', 600);
+                    if (typeof logActivity === 'function') logActivity('SECURITY: UNAUTHORIZED_ACCESS_ATTEMPT');
+                }
+            }
+        });
+
+        // Parse state from persistent session 
+        if (sessionStorage.getItem('shashwat_unlocked') === 'true') {
+            secretLocked.style.display = 'none';
+            secretUnlocked.style.display = 'block';
+            
+            if (!secretUnlocked.innerHTML.trim() || secretUnlocked.innerHTML.includes('OBFUSCATED_PAYLOAD')) {
+                secretUnlocked.innerHTML = atob(SECURE_PAYLOAD);
+                if (typeof initSecretPlayer === 'function') setTimeout(initSecretPlayer, 100);
+            }
+        }
     }
 
     // Prev/Next just restart the track for now since it's a single video
@@ -59,22 +101,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // YouTube Player Logic (Outside DOMContentLoaded for Global Scope)
 let player;
+function initSecretPlayer() {
+    if (window.YT && window.YT.Player && !player && document.getElementById('yt-player-container')) {
+        player = new YT.Player('yt-player-container', {
+            height: '1',
+            width: '1',
+            videoId: 'C7WoqglcHDo',
+            playerVars: {
+                'playsinline': 1,
+                'controls': 0,
+                'disablekb': 1,
+                'origin': window.location.origin
+            },
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+}
+
 function onYouTubeIframeAPIReady() {
-    player = new YT.Player('yt-player-container', {
-        height: '1',
-        width: '1',
-        videoId: 'C7WoqglcHDo',
-        playerVars: {
-            'playsinline': 1,
-            'controls': 0,
-            'disablekb': 1,
-            'origin': window.location.origin
-        },
-        events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-        }
-    });
+    if (document.getElementById('yt-player-container')) {
+        initSecretPlayer();
+    }
 }
 
 function onPlayerReady(event) {
@@ -105,23 +155,81 @@ function onPlayerStateChange(event) {
 
 // --- Advanced Enhancements Logic ---
 
+// Upstash Redis Configuration (Anonymous Guestbook)
+const REDIS_URL = "https://frank-primate-42451.upstash.io";
+const REDIS_TOKEN = "AaXTAAIncDI1OGQ4MDBiYmRmOGU0ZTVmOTZmODMyYjUzZmU0ZjE5M3AyNDI0NTE";
+
+// Guestbook Functions
+async function loadComments() {
+    const list = document.getElementById('guestbook-list');
+    if (!list) return;
+    try {
+        const res = await fetch(`${REDIS_URL}/lrange/comments/0/49`, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+        const data = await res.json();
+        if (data.result) {
+            list.innerHTML = data.result.length ? '' : '<div style="font-family: var(--font-body); font-size: 0.8rem; opacity: 0.3; text-align: center;">-- NO_MESSAGES_LOGGED_YET --</div>';
+            data.result.forEach(raw => {
+                try {
+                    const c = JSON.parse(raw);
+                    const item = document.createElement('div');
+                    item.style.padding = '1.2rem'; item.style.border = '1px solid rgba(0,0,0,0.1)'; item.style.background = 'rgba(0,0,0,0.02)';
+                    item.innerHTML = `<div style="font-size:0.7rem;opacity:0.4;margin-bottom:0.5rem;">ANONYMOUS // ${new Date(c.timestamp).toLocaleDateString()}</div><div style="font-size:0.9rem;line-height:1.5;">${c.text.replace(/</g,"&lt;")}</div>`;
+                    list.appendChild(item);
+                } catch(e) { /* Ignore malformed */ }
+            });
+        }
+    } catch (e) { console.error(e); }
+}
+
+async function sendComment() {
+    const input = document.getElementById('guestbook-input');
+    const btn = document.getElementById('guestbook-send');
+    if (!input?.value.trim() || !btn) return;
+    const comment = JSON.stringify({ text: input.value.trim(), timestamp: Date.now() });
+    btn.disabled = true; btn.textContent = 'TRANSMITTING...';
+    try {
+        await fetch(`${REDIS_URL}/lpush/comments/${encodeURIComponent(comment)}`, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+        input.value = ''; await loadComments();
+    } catch (e) { console.error(e); } finally { btn.disabled = false; btn.textContent = 'Transmit \u2192'; }
+}
+
+// Global Initialization for Guestbook
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        loadComments();
+        document.getElementById('guestbook-send')?.addEventListener('click', sendComment);
+    });
+} else {
+    loadComments();
+    document.getElementById('guestbook-send')?.addEventListener('click', sendComment);
+}
+
+// Secure Base64 Encoded Photography & Hobbies HTML Component
+const SECURE_PAYLOAD = "ICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNlY3Rpb24taGVhZGVyIj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImhlYWRlci1zcXVhcmUiPjwvZGl2PgogICAgICAgICAgICAgICAgPGgyIGNsYXNzPSJzZWN0aW9uLXRpdGxlIGdsaXRjaC10ZXh0IiBkYXRhLXRleHQ9IlBIT1RPR1JBUEhZICYgSE9CQklFUyI+UEhPVE9HUkFQSFkgJiBIT0JCSUVTPC9oMj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9ImhlYWRlci1saW5lIj48L2Rpdj4KICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICA8cCBzdHlsZT0iZm9udC1mYW1pbHk6IHZhcigtLWZvbnQtYm9keSk7IG9wYWNpdHk6IDAuODsgbWFyZ2luLWJvdHRvbTogM3JlbTsiPgogICAgICAgICAgICAgICAgQmV5b25kIHRoZSB0ZXJtaW5hbDogY2FwdHVyaW5nIGxpZ2h0LCBmb3JtLCBhbmQgdGhlICJnaG9zdCBpbiB0aGUgbWFjaGluZS4iCiAgICAgICAgICAgIDwvcD4KCiAgICAgICAgICAgIDxkaXYgY2xhc3M9InBob3RvZ3JhcGh5LWdyaWQiPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icGhvdG8tY2FyZCBicnV0YWwtYm9yZGVyIGJydXRhbC1zaGFkb3ciPgogICAgICAgICAgICAgICAgICAgIDxpbWcgc3JjPSJhc3NldHMvaW1nL2hvYmJ5MS5wbmciIGFsdD0iSG9iYnkgUGhvdG9ncmFwaHkgMSI+CiAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InBob3RvLWNhcmQgYnJ1dGFsLWJvcmRlciBicnV0YWwtc2hhZG93Ij4KICAgICAgICAgICAgICAgICAgICA8aW1nIHNyYz0iYXNzZXRzL2ltZy9ob2JieTIucG5nIiBhbHQ9IkhvYmJ5IFBob3RvZ3JhcGh5IDIiPgogICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwaG90by1jYXJkIGJydXRhbC1ib3JkZXIgYnJ1dGFsLXNoYWRvdyI+CiAgICAgICAgICAgICAgICAgICAgPGltZyBzcmM9ImFzc2V0cy9pbWcvaG9iYnkzLnBuZyIgYWx0PSJIb2JieSBQaG90b2dyYXBoeSAzIj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4KCiAgICAgICAgICAgIDwhLS0gSG9iYnkgU2tpbGwgVHJlZSAmIE11c2ljIFBsYXllciAtLT4KICAgICAgICAgICAgPGRpdiBzdHlsZT0iZGlzcGxheTogZ3JpZDsgZ3JpZC10ZW1wbGF0ZS1jb2x1bW5zOiByZXBlYXQoYXV0by1maXQsIG1pbm1heCgzMDBweCwgMWZyKSk7IGdhcDogNHJlbTsgbWFyZ2luLXRvcDogNnJlbTsiPgogICAgICAgICAgICAgICAgPCEtLSBTa2lsbCBUcmVlIC0tPgogICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0iaG9iYnktc2tpbGwtdHJlZSBicnV0YWwtYm9yZGVyIGJydXRhbC1zaGFkb3ciIHN0eWxlPSJwYWRkaW5nOiAycmVtOyI+CiAgICAgICAgICAgICAgICAgICAgPGgzIHN0eWxlPSJmb250LWZhbWlseTogdmFyKC0tZm9udC1oZWFkaW5nKTsgbWFyZ2luLWJvdHRvbTogMnJlbTsgYm9yZGVyLWJvdHRvbTogMnB4IHNvbGlkIHZhcigtLXRleHQtcHJpbWFyeSk7IGRpc3BsYXk6IGlubGluZS1ibG9jazsiPlBFUlNPTkFMX1NUQVRTLlNZUzwvaDM+CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0ic2tpbGwtbWV0ZXItZ3JvdXAiPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1sYWJlbCI+UEhPVE9HUkFQSFkgPHNwYW4gY2xhc3M9InNraWxsLXZhbCI+TFZMIDA4PC9zcGFuPjwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1iYXIgYnJ1dGFsLWJvcmRlciI+PGRpdiBjbGFzcz0ic2tpbGwtbWV0ZXItZmlsbCIgc3R5bGU9IndpZHRoOiA4MCU7Ij48L2Rpdj48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1ncm91cCI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNraWxsLW1ldGVyLWxhYmVsIj5HQU1JTkcgPHNwYW4gY2xhc3M9InNraWxsLXZhbCI+TFZMIDA5PC9zcGFuPjwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1iYXIgYnJ1dGFsLWJvcmRlciI+PGRpdiBjbGFzcz0ic2tpbGwtbWV0ZXItZmlsbCIgc3R5bGU9IndpZHRoOiA5MCU7Ij48L2Rpdj48L2Rpdj4KICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgICAgICAKICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1ncm91cCI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNraWxsLW1ldGVyLWxhYmVsIj5UUkVLS0lORyA8c3BhbiBjbGFzcz0ic2tpbGwtdmFsIj5MVkwgMDU8L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNraWxsLW1ldGVyLWJhciBicnV0YWwtYm9yZGVyIj48ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1maWxsIiBzdHlsZT0id2lkdGg6IDUwJTsiPjwvZGl2PjwvZGl2PgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgoKICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1ncm91cCI+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNraWxsLW1ldGVyLWxhYmVsIj5DSEVTUyA8c3BhbiBjbGFzcz0ic2tpbGwtdmFsIj5MVkwgMDc8L3NwYW4+PC9kaXY+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InNraWxsLW1ldGVyLWJhciBicnV0YWwtYm9yZGVyIj48ZGl2IGNsYXNzPSJza2lsbC1tZXRlci1maWxsIiBzdHlsZT0id2lkdGg6IDcwJTsiPjwvZGl2PjwvZGl2PgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgPCEtLSBNdXNpYyBQbGF5ZXIgLS0+CiAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJyZXRyby1wbGF5ZXIgYnJ1dGFsLWJvcmRlciBicnV0YWwtc2hhZG93IiBzdHlsZT0icGFkZGluZzogMnJlbTsgYmFja2dyb3VuZDogIzExMTsgY29sb3I6ICMwMGZmMDA7Ij4KICAgICAgICAgICAgICAgICAgICA8ZGl2IGNsYXNzPSJwbGF5ZXItaGVhZGVyIiBzdHlsZT0iZGlzcGxheTogZmxleDsganVzdGlmeS1jb250ZW50OiBzcGFjZS1iZXR3ZWVuOyBtYXJnaW4tYm90dG9tOiAxLjVyZW07IGZvbnQtc2l6ZTogMC43cmVtOyBmb250LWZhbWlseTogdmFyKC0tZm9udC1ib2R5KTsiPgogICAgICAgICAgICAgICAgICAgICAgICA8c3Bhbj5TX1BMQVlFUi5FWEU8L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgaWQ9InBsYXllci1zdGF0dXMiIHN0eWxlPSJjb2xvcjogI2ZmMDAwMDsiPlsgU1RPUFBFRCBdPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0icGxheWVyLWRpc3BsYXkgYnJ1dGFsLWJvcmRlciIgc3R5bGU9InBhZGRpbmc6IDFyZW07IGJhY2tncm91bmQ6ICMwMDA7IG1hcmdpbi1ib3R0b206IDEuNXJlbTsgcG9zaXRpb246IHJlbGF0aXZlOyI+CiAgICAgICAgICAgICAgICAgICAgICAgIDwhLS0gSGlkZGVuIFlvdVR1YmUgUGxheWVyIC0tPgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGlkPSJ5dC1wbGF5ZXItY29udGFpbmVyIiBzdHlsZT0icG9zaXRpb246IGFic29sdXRlOyB3aWR0aDogMXB4OyBoZWlnaHQ6IDFweDsgb3BhY2l0eTogMC4wMTsgcG9pbnRlci1ldmVudHM6IG5vbmU7Ij48L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InRyYWNrLWluZm8iIHN0eWxlPSJmb250LWZhbWlseTogdmFyKC0tZm9udC1ib2R5KTsgZm9udC1zaXplOiAwLjhyZW07IG92ZXJmbG93OiBoaWRkZW47IHdoaXRlLXNwYWNlOiBub3dyYXA7Ij4KICAgICAgICAgICAgICAgICAgICAgICAgICAgIDxzcGFuIGNsYXNzPSJzY3JvbGxpbmctdGV4dCI+Tk9XX1BMQVlJTkc6IExPLUZJX0JFQVRTX0ZPUl9DT0RJTkdfJl9ERVNJR04gLy8gU0hBU0hXQVRfUkFESU8gLy88L3NwYW4+CiAgICAgICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgICAgICA8ZGl2IGlkPSJ2aXN1YWxpemVyIiBjbGFzcz0idmlzdWFsaXplciIgc3R5bGU9ImRpc3BsYXk6IGZsZXg7IGFsaWduLWl0ZW1zOiBmbGV4LWVuZDsgZ2FwOiA0cHg7IGhlaWdodDogMzBweDsgbWFyZ2luLXRvcDogMXJlbTsiPgogICAgICAgICAgICAgICAgICAgICAgICAgICAgPGRpdiBjbGFzcz0idi1iYXIiPjwvZGl2PjxkaXYgY2xhc3M9InYtYmFyIj48L2Rpdj48ZGl2IGNsYXNzPSJ2LWJhciI+PC9kaXY+PGRpdiBjbGFzcz0idi1iYXIiPjwvZGl2PjxkaXYgY2xhc3M9InYtYmFyIj48L2Rpdj48ZGl2IGNsYXNzPSJ2LWJhciI+PC9kaXY+PGRpdiBjbGFzcz0idi1iYXIiPjwvZGl2PjxkaXYgY2xhc3M9InYtYmFyIj48L2Rpdj4KICAgICAgICAgICAgICAgICAgICAgICAgPC9kaXY+CiAgICAgICAgICAgICAgICAgICAgPC9kaXY+CgogICAgICAgICAgICAgICAgICAgIDxkaXYgY2xhc3M9InBsYXllci1jb250cm9scyIgc3R5bGU9ImRpc3BsYXk6IGZsZXg7IGp1c3RpZnktY29udGVudDogY2VudGVyOyBnYXA6IDFyZW07Ij4KICAgICAgICAgICAgICAgICAgICAgICAgPGJ1dHRvbiBpZD0icGxheWVyLXByZXYiIGNsYXNzPSJwbGF5ZXItYnRuIGJydXRhbC1ib3JkZXIiPiZsdDsmbHQ7PC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b24gaWQ9InBsYXllci1wbGF5LXBhdXNlIiBjbGFzcz0icGxheWVyLWJ0biBicnV0YWwtYm9yZGVyIj5QTEFZPC9idXR0b24+CiAgICAgICAgICAgICAgICAgICAgICAgIDxidXR0b24gaWQ9InBsYXllci1uZXh0IiBjbGFzcz0icGxheWVyLWJ0biBicnV0YWwtYm9yZGVyIj4mZ3Q7Jmd0OzwvYnV0dG9uPgogICAgICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICAgICAgICAgIDxkaXYgc3R5bGU9ImZvbnQtc2l6ZTogMC42cmVtOyBtYXJnaW4tdG9wOiAxcmVtOyB0ZXh0LWFsaWduOiBjZW50ZXI7IG9wYWNpdHk6IDAuNTsgZm9udC1mYW1pbHk6IHZhcigtLWZvbnQtYm9keSk7Ij4KICAgICAgICAgICAgICAgICAgICAgICAgQVVUT1BMQVkgQkxPQ0tFRCBCWSBCUk9XU0VSIC8vIENMSUNLIFBMQVkgVE8gU1RBUlQKICAgICAgICAgICAgICAgICAgICA8L2Rpdj4KICAgICAgICAgICAgICAgIDwvZGl2PgogICAgICAgICAgICA8L2Rpdj4=";
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Inject UI Components (System Activity, CRT Overlay, Terminal)
     const body = document.body;
+    const isBlogPage = window.location.pathname.includes('blog.html');
 
-    // Activity Feed
-    const activityFeed = document.createElement('div');
-    activityFeed.id = 'activity-feed';
-    body.appendChild(activityFeed);
+    // Activity Feed (Disabled on Blog)
+    if (!isBlogPage) {
+        const activityFeed = document.createElement('div');
+        activityFeed.id = 'activity-feed';
+        body.appendChild(activityFeed);
+    }
 
-    // CRT Overlay
-    const crtOverlay = document.createElement('div');
-    crtOverlay.id = 'crt-overlay';
-    body.appendChild(crtOverlay);
+    // CRT Overlay (Disabled on Blog)
+    if (!isBlogPage) {
+        const crtOverlay = document.createElement('div');
+        crtOverlay.id = 'crt-overlay';
+        body.appendChild(crtOverlay);
+    }
 
-    // Terminal Overlay
-    const terminalOverlay = document.createElement('div');
-    terminalOverlay.id = 'terminal-overlay';
+    // Terminal Overlay (Disabled on Blog)
+    if (!isBlogPage) {
+        const terminalOverlay = document.createElement('div');
+        terminalOverlay.id = 'terminal-overlay';
     terminalOverlay.innerHTML = `
         <div class="terminal-header">
             <div>SHASHWAT_OS [VERSION 1.0.42]</div>
@@ -137,10 +245,11 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `;
     body.appendChild(terminalOverlay);
+    }
 
     // 0. Inject Footer Hint & Log Toggle
     const footerContent = document.querySelector('.footer-content');
-    if (footerContent) {
+    if (footerContent && !isBlogPage) {
         const container = document.createElement('div');
         container.className = 'footer-hints-container';
         container.style.cssText = "display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; margin-top: 5px;";
@@ -315,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     printToTerminal('-r--       13.1KB     MAR_07_2026   about.html');
                     printToTerminal('-r--       7.4KB      MAR_07_2026   projects.html');
                     printToTerminal('-r--       8.8KB      MAR_07_2026   resume.html');
+                    printToTerminal('-r--       8.4KB      MAR_07_2026   blog.html');
                     printToTerminal('-r--       5.8KB      MAR_07_2026   contact.html');
                     printToTerminal('-------------------------------------------');
                     printToTerminal('USE "LS [DIR]" TO VIEW SUBDIRECTORIES.');
@@ -429,6 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         'about': 'about.html',
                         'projects': 'projects.html',
                         'resume': 'about.html#resume',
+                        'blog': 'blog.html',
                         'contact': 'about.html#contact'
                     };
                     if (routeMap[page]) {
@@ -496,5 +607,40 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
 
+    // Resume Writing Button Hover Cycler
+    const writingBtn = document.getElementById('writing-btn');
+    if (writingBtn) {
+        const defaultText = "I WRITE TOO // SEE HERE &rarr;";
+        const synonyms = [
+            "BLOGS // READ MORE &rarr;",
+            "ARTICLES // EXPLORE &rarr;",
+            "TECH_LOGS // INITIATE &rarr;",
+            "ESSAYS // LOAD &rarr;",
+            "THOUGHTS // DECRYPT &rarr;",
+            "PUBLICATIONS // VIEW &rarr;",
+            "TUTORIALS // EXECUTE &rarr;",
+            "CHRONICLES // ACCESS &rarr;",
+            "REVIEWS // ANALYZE &rarr;",
+            "NOTES // PARSE &rarr;",
+            "ARCHIVES // EXTRACT &rarr;"
+        ];
+        let cycleInterval;
+        let index = 0;
+
+        // Resume Writing Button Hover Cycler
+        writingBtn.addEventListener('mouseenter', () => {
+            cycleInterval = setInterval(() => {
+                writingBtn.innerHTML = synonyms[index];
+                index = (index + 1) % synonyms.length;
+            }, 400); // 400ms medium swap
+        });
+
+        writingBtn.addEventListener('mouseleave', () => {
+            clearInterval(cycleInterval);
+            writingBtn.innerHTML = defaultText;
+            index = 0;
+        });
+    }
+
+});

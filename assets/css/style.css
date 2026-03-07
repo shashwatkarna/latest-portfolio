@@ -1141,7 +1141,6 @@ h6,
 
 #secret-section.active {
     display: block;
-    animation: glitch-init 0.4s cubic-bezier(.25, .46, .45, .94) both;
 }
 
 .photography-grid {

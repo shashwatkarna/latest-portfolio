@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHASHWAT // BLOG_LOGS</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- CRT Overlay -->
+    <div id="crt-overlay"></div>
+
+    <!-- Grid Background -->
+    <div class="grid-bg"></div>
+
+    <!-- Simple Back Link -->
+    <div style="padding: 2rem clamp(1rem, 5vw, 4rem); font-family: var(--font-heading); font-weight: bold; font-size: 0.9rem;">
+        <a href="index.html" style="text-decoration: none; color: var(--text-primary); border: 1px solid var(--text-primary); padding: 5px 10px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--text-primary)'; this.style.color='var(--bg-color)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-primary)'">&larr; BACK_TO_HOME</a>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container page-transition" style="animation: page-enter 0.6s cubic-bezier(0.87, 0, 0.13, 1) forwards; padding-top: 0;">
+        
+        <section style="margin-bottom: 3rem;">
+            <div class="section-header">
+                <div class="header-square"></div>
+                <h2 class="section-title">WRITINGS</h2>
+                <div class="header-line"></div>
+            </div>
+            <p style="font-family: var(--font-body); font-size: 0.9rem; margin-bottom: 25px; max-width: 600px; line-height: 1.6; opacity: 0.6;">
+                Technical writeups, design notes, and manual transmissions.
+            </p>
+        </section>
+
+        <section class="projects-grid" style="margin-bottom: 2rem;">
+            
+            <!-- Example Blog Post Component - Minimalist Version -->
+            <article class="project-card brutal-border brutal-shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
+                    Building a Brutalist Portfolio
+                </h3>
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                    Returning to pure HTML/CSS to stand out in a sea of identical templates. Minimalism as a technical choice.
+                </p>
+                <div class="project-links">
+                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                </div>
+            </article>
+
+            <!-- Blog Post 2 - Live -->
+            <article class="project-card brutal-border brutal-shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
+                    The Ghost in the Machine
+                </h3>
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                    Analyzing the psychological impact of lo-fi aesthetics on developer productivity and creative flow.
+                </p>
+                <div class="project-links">
+                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                </div>
+            </article>
+
+            <!-- Blog Post 3 - Live -->
+            <article class="project-card brutal-border brutal-shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+                <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
+                    Zero-Dependency Design
+                </h3>
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                    A deep dive into building modular, interactive UI components using only vanilla Javascript and CSS variables.
+                </p>
+                <div class="project-links">
+                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                </div>
+            </article>
+
+            <!-- Awaiting Transmission -->
+            <article class="project-card" style="display: flex; flex-direction: column; opacity: 0.15; border: 2px dashed var(--text-primary); padding: 2rem; background: transparent;">
+                <div style="font-family: var(--font-heading); font-size: 0.8rem; margin: auto;">
+                    AWAITING_INPUT...
+                </div>
+            </article>
+
+        </section>
+
+        <!-- Minimalist Visitor Counter -->
+        <div style="text-align: center; padding: 1rem 0; font-family: var(--font-body); font-size: 0.7rem; opacity: 0.4; text-transform: uppercase; letter-spacing: 2px; width: 200px; margin: 0 auto 0 auto;">
+            VISITS: [<span id="visitor-count">000042</span>]
+        </div>
+
+        <!-- Anonymous Guestbook Section -->
+        <section id="guestbook" style="max-width: 600px; margin: 4rem auto 4rem auto; border-top: 2px solid var(--text-primary); padding-top: 3rem;">
+            <div style="font-family: var(--font-heading); font-size: 1.2rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+                <span>GUESTBOOK.EXE</span>
+                <span style="font-size: 0.7rem; opacity: 0.5;">STATUS: WAITING_FOR_INPUT</span>
+            </div>
+
+            <!-- Comment Input -->
+            <div style="margin-bottom: 3rem;">
+                <textarea id="guestbook-input" placeholder="Leave a message... (What you like, what you want to see?)" style="width: 100%; height: 100px; background: transparent; border: 1px solid rgba(0,0,0,0.1); padding: 1rem; font-family: var(--font-body); font-size: 0.9rem; color: var(--text-primary); outline: none; resize: none; transition: all 0.3s ease;" onfocus="this.style.borderColor='var(--text-primary)'" onblur="this.style.borderColor='rgba(0,0,0,0.1)'"></textarea>
+                <div style="display: flex; justify-content: flex-end; margin-top: 1rem;">
+                    <button id="guestbook-send" class="btn" style="padding: 5px 20px; font-size: 0.8rem; background: var(--text-primary); color: var(--bg-color); border: none; cursor: pointer; text-transform: uppercase; font-weight: bold;">Transmit &rarr;</button>
+                </div>
+            </div>
+
+            <!-- Comments List -->
+            <div id="guestbook-list" style="display: flex; flex-direction: column; gap: 2rem;">
+                <div style="font-family: var(--font-body); font-size: 0.8rem; opacity: 0.3; text-align: center;">-- NO_MESSAGES_LOGGED_YET --</div>
+                <!-- Messages will appear here -->
+            </div>
+        </section>
+
+    </main>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        // Simple Visitor Counter Persistence 
+        document.addEventListener('DOMContentLoaded', () => {
+            let count = localStorage.getItem('blog_visitor_count') || 42;
+            count = parseInt(count) + 1;
+            localStorage.setItem('blog_visitor_count', count);
+            document.getElementById('visitor-count').textContent = count.toString().padStart(6, '0');
+        });
+    </script>
+</body>
+</html>
