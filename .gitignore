@@ -1,0 +1,6 @@
+# Assets & UI
+ui/
+
+# Utility Scripts & Docs
+docs/remove_bg.py
+docs/resume_text.txt
