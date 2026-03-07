@@ -211,10 +211,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 1. Inject UI Components (System Activity, CRT Overlay, Terminal)
     const body = document.body;
     const isBlogPage = window.location.pathname.includes('blog.html');
+    let activityFeed = null;
+    let terminalOverlay = null;
 
     // Activity Feed (Disabled on Blog)
     if (!isBlogPage) {
-        const activityFeed = document.createElement('div');
+        activityFeed = document.createElement('div');
         activityFeed.id = 'activity-feed';
         body.appendChild(activityFeed);
     }
@@ -228,7 +230,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Terminal Overlay (Disabled on Blog)
     if (!isBlogPage) {
-        const terminalOverlay = document.createElement('div');
+        terminalOverlay = document.createElement('div');
         terminalOverlay.id = 'terminal-overlay';
     terminalOverlay.innerHTML = `
         <div class="terminal-header">
@@ -304,6 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 2. Activity Logger Function
     function logActivity(message) {
+        if (!activityFeed) return;
         // Respect toggle
         if (localStorage.getItem('systemLogsEnabled') === 'false') return;
 
@@ -319,7 +322,7 @@ document.addEventListener('DOMContentLoaded', () => {
             entry.style.transform = 'translateX(-20px)';
             entry.style.transition = 'all 0.5s ease';
             setTimeout(() => {
-                if (entry.parentNode === activityFeed) {
+                if (activityFeed && entry.parentNode === activityFeed) {
                     activityFeed.removeChild(entry);
                 }
             }, 500);
@@ -368,7 +371,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const termInput = document.getElementById('terminal-input');
     const termOutput = document.getElementById('terminal-output');
 
+    if (!isBlogPage && (!termInput || !termOutput || !terminalOverlay)) {
+        console.error('Terminal components missing');
+    }
+
     function printToTerminal(text, color = '#00ff00') {
+        if (!termOutput) return;
         const div = document.createElement('div');
         div.style.color = color;
         div.innerHTML = text;
@@ -378,6 +386,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hotkey: Ctrl + K (Global)
     document.addEventListener('keydown', (e) => {
+        if (!terminalOverlay || !termInput) return;
         if (e.ctrlKey && e.key === 'k') {
             e.preventDefault();
             terminalOverlay.classList.toggle('active');
@@ -394,7 +403,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    termInput.addEventListener('keydown', (e) => {
+    if (termInput) {
+        termInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
             const cmd = termInput.value.trim().toLowerCase();
             termInput.value = '';
@@ -558,6 +568,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+    }
 
     // 6. Contact Form AJAX Submission
     const contactForm = document.getElementById('contact-form');
