@@ -20,6 +20,19 @@
     <!-- Grid Background -->
     <div class="grid-bg"></div>
 
+    <!-- Parallax Layers -->
+    <div class="parallax-data">
+        <div class="deco-text" style="top: 5%; left: 2%; font-size: 1.2rem; opacity: 0.1;" data-speed="1.2">SYSTEM_OVERRIDE_INIT</div>
+        <div class="deco-text" style="top: 15%; right: 5%;" data-speed="2">&gt; STACK_TRACE: 0xFD21A...</div>
+        <div class="deco-text" style="top: 25%; left: 8%;" data-speed="-0.8">01000101 01011000 01000101</div>
+        <div class="deco-text" style="top: 40%; right: 12%; font-size: 1rem; opacity: 0.05;" data-speed="-1.5">INITIALIZING_NARRATIVE_SEQUENCE_</div>
+        <div class="deco-text" style="top: 55%; left: 4%;" data-speed="2.5">&gt; MAPPING_NEURAL_NETWORKS...</div>
+        <div class="deco-text" style="top: 65%; right: 15%;" data-speed="0.5">./OPTIMIZE.SH --AGRESSIVE</div>
+        <div class="deco-text" style="top: 75%; left: 10%;" data-speed="1.8">&gt; ANALYZING_EXPERIENCE_LOGS...</div>
+        <div class="deco-text" style="top: 85%; right: 8%;" data-speed="3">01001000 01001001 01010010 01000101</div>
+        <div class="deco-text" style="top: 95%; left: 5%; font-size: 1.5rem; opacity: 0.03;" data-speed="4">CORE_DUMP_COMPLETE</div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-logo">
@@ -43,25 +56,25 @@
         <!-- Resume Section -->
         <section id="resume" class="section">
             <div class="resume-header-flex" style="flex-direction: column; align-items: flex-start; gap: 2rem;">
-                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem;">
+                <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--text-primary); padding-bottom: 1rem;" class="reveal reveal-glitch">
                     <h2 class="resume-title" style="margin: 0;">RESUME</h2>
                     <a href="docs/SHASHWATKARNA_RESUME.pdf" class="button-primary shadow shadow-hover" style="text-decoration: none;" download>DOWNLOAD PDF &darr;</a>
                 </div>
                 
                 <div class="resume-skills-grid" style="width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
-                    <div class="skill-category border shadow" style="padding: 1rem; background: var(--bg-color);">
+                    <div class="skill-category border shadow reveal" style="padding: 1rem; background: var(--bg-color);">
                         <h4 style="margin-top: 0; text-transform: uppercase;">Languages</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 0;">Python, Java, JavaScript, C/C++, HTML/CSS</p>
                     </div>
-                    <div class="skill-category border shadow" style="padding: 1rem; background: var(--bg-color);">
+                    <div class="skill-category border shadow reveal" style="padding: 1rem; background: var(--bg-color);" data-delay="100">
                         <h4 style="margin-top: 0; text-transform: uppercase;">Frameworks</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 0;">React, Next.js, Node.js, Flask, FastAPI</p>
                     </div>
-                    <div class="skill-category border shadow" style="padding: 1rem; background: var(--bg-color);">
+                    <div class="skill-category border shadow reveal" style="padding: 1rem; background: var(--bg-color);" data-delay="200">
                         <h4 style="margin-top: 0; text-transform: uppercase;">Libraries</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 0;">TensorFlow, PyTorch, scikit-learn, Tailwind CSS</p>
                     </div>
-                    <div class="skill-category border shadow" style="padding: 1rem; background: var(--bg-color);">
+                    <div class="skill-category border shadow reveal" style="padding: 1rem; background: var(--bg-color);" data-delay="300">
                         <h4 style="margin-top: 0; text-transform: uppercase;">Tools & DB</h4>
                         <p style="font-size: 0.9rem; margin-bottom: 0;">Git, Docker, Travis CI, GCP, MongoDB, MySQL</p>
                     </div>
@@ -70,7 +83,7 @@
 
             <div class="timeline">
                 <!-- Timeline Item 1 -->
-                <div class="timeline-item right">
+                <div class="timeline-item right reveal reveal-right">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content border shadow">
                         <span class="timeline-icon">&gt;_</span>
@@ -83,7 +96,7 @@
                 </div>
 
                 <!-- Timeline Item 2 -->
-                <div class="timeline-item left">
+                <div class="timeline-item left reveal reveal-left">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content border shadow">
                         <span class="timeline-icon">&#129302;</span>
@@ -96,7 +109,7 @@
                 </div>
 
                 <!-- Timeline Item 3 -->
-                <div class="timeline-item right">
+                <div class="timeline-item right reveal reveal-right">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content border shadow">
                         <span class="timeline-icon">&#127891;</span>
@@ -109,7 +122,7 @@
                 </div>
 
                 <!-- Timeline Item 4 -->
-                <div class="timeline-item left">
+                <div class="timeline-item left reveal reveal-left">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content border shadow">
                         <span class="timeline-icon">&#127979;</span>
@@ -122,7 +135,7 @@
                 </div>
 
                 <!-- Timeline Item 5 -->
-                <div class="timeline-item right">
+                <div class="timeline-item right reveal reveal-right">
                     <div class="timeline-dot"></div>
                     <div class="timeline-content border shadow">
                         <span class="timeline-icon">&#128218;</span>

@@ -420,6 +420,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     printToTerminal(' - SOCIAL: LIST_COMM_LINKS');
                     printToTerminal(' - DATE: SHOW_SYSTEM_TIME');
                     printToTerminal(' - CRT: TOGGLE_IMMERSIVE_MODE');
+                    printToTerminal(' - STATUS: SYSTEM_INTEGRITY_CHECK');
+                    printToTerminal(' - LOGS: TOGGLE_ACTIVITY_FEED');
+                    printToTerminal(' - KONAMI: SHOW_SECRET_HINT');
                     printToTerminal(' - WHOAMI: DISPLAY_IDENTITY');
                     printToTerminal(' - CLEAR: PURGE_OUTPUT');
                     printToTerminal(' - EXIT: DISCONNECT');
@@ -538,6 +541,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 case 'whoami':
                     printToTerminal('USER: SHASHWAT_KARNA');
                     printToTerminal('PERMISSIONS: ROOT_ADMIN_ACCESS');
+                    break;
+                case 'status':
+                    printToTerminal('SYSTEM_STATUS_REPORT:');
+                    printToTerminal(' - UPTIME: 382:14:22');
+                    printToTerminal(' - MEMORY: [||||||||||] 84%');
+                    printToTerminal(' - NETWORK: STABLE_SSL_ENCRYPTED');
+                    printToTerminal(' - MODULES: SCRYLLTELL_OS_1.0_ACTIVE');
+                    printToTerminal(' - SECURITY: NO_BREACHES_DETECTED');
+                    break;
+                case 'logs':
+                    const toggleBtn = document.getElementById('log-toggle-btn');
+                    if (toggleBtn) {
+                        toggleBtn.click();
+                        const isNowOn = localStorage.getItem('systemLogsEnabled') !== 'false';
+                        printToTerminal(`ACTIVITY_FEED: ${isNowOn ? 'ENABLED' : 'DISABLED'}`);
+                    } else {
+                        printToTerminal('ERROR: ACTIVITY_FEED_CONTROLLER_NOT_FOUND.', '#ff0000');
+                    }
+                    break;
+                case 'konami':
+                    printToTerminal('SEARCH_FOR_THE_ANCIENT_SEQUENCE:');
+                    printToTerminal('Hint: UP_UP_DOWN_DOWN_LEFT_RIGHT_LEFT_RIGHT_B_A');
                     break;
                 case 'exit':
                     terminalOverlay.classList.remove('active');
@@ -708,4 +733,103 @@ function cycleModuleTitles() {
 // Start cycling if titles exist
 if (document.querySelector('.cycling-title')) {
     cycleModuleTitles();
+}
+
+// Scrollytelling & Parallax Logic
+function initScrollyteller() {
+    const reveals = document.querySelectorAll('.reveal');
+    if (reveals.length === 0) return;
+    
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const delay = parseInt(entry.target.getAttribute('data-delay')) || 0;
+                setTimeout(() => {
+                    entry.target.classList.add('revealed');
+                }, delay);
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, observerOptions);
+
+    reveals.forEach(el => revealObserver.observe(el));
+}
+
+function initParallax() {
+    const decoElements = document.querySelectorAll('.deco-text');
+    if (decoElements.length === 0) return;
+
+    // Cache elements and their speeds for better performance
+    const parallaxItems = Array.from(decoElements).map(el => ({
+        element: el,
+        speed: parseFloat(el.getAttribute('data-speed')) || 1
+    }));
+
+    let tick = false;
+
+    const updateParallax = () => {
+        const scrolled = window.scrollY;
+        parallaxItems.forEach(item => {
+            const yPos = -(scrolled * item.speed * 0.15);
+            // Use translate3d for GPU acceleration
+            item.element.style.transform = `translate3d(0, ${yPos}px, 0)`;
+        });
+        tick = false;
+    };
+
+    window.addEventListener('scroll', () => {
+        if (!tick) {
+            requestAnimationFrame(updateParallax);
+            tick = true;
+        }
+    }, { passive: true });
+}
+
+// Konami Code Easter Egg
+function initKonamiCode() {
+    const sequence = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+    let input = [];
+    
+    document.addEventListener('keydown', (e) => {
+        input.push(e.key);
+        input = input.slice(-sequence.length);
+        
+        if (JSON.stringify(input) === JSON.stringify(sequence)) {
+            if (typeof body !== 'undefined' || document.body) {
+                const b = document.body;
+                b.classList.toggle('crt-active');
+                if (typeof logActivity === 'function') {
+                    logActivity(`EASTER_EGG: KONAMI_CODE_ACTIVATED`);
+                    logActivity(`SYSTEM_MODE: CRT_${b.classList.contains('crt-active') ? 'ENABLED' : 'DISABLED'}`);
+                }
+            }
+        }
+    });
+}
+
+// Initialize Scrollytelling
+document.addEventListener('DOMContentLoaded', () => {
+    initScrollyteller();
+    initParallax();
+    initMagneticGrid();
+    initKonamiCode();
+});
+
+// Classical UX Enhancements
+function initMagneticGrid() {
+    const grid = document.querySelector('.grid-bg');
+    if (!grid) return;
+
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) * 100;
+        const y = (e.clientY / window.innerHeight) * 100;
+        
+        grid.style.setProperty('--mouse-x', `${x}%`);
+        grid.style.setProperty('--mouse-y', `${y}%`);
+    }, { passive: true });
 }
