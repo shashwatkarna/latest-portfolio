@@ -578,6 +578,9 @@ h6,
     justify-content: space-between;
     align-items: center;
     margin-bottom: 5rem;
+    position: relative;
+    z-index: 20; /* Ensure header is above parallax data */
+    background: var(--bg-color); /* Add background to avoid transparency issues with data layers */
 }
 
 .resume-title {
@@ -1625,7 +1628,31 @@ body.crt-active {
     z-index: 10;
 }
 
-/* Custom "Glitch" Reveal for major headers */
+/* --- Scrollytelling & Reveals --- */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: transform, opacity;
+}
+
+.reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.reveal-left {
+    transform: translateX(-50px);
+}
+
+.reveal-right {
+    transform: translateX(50px);
+}
+
+.reveal-glitch.revealed {
+    animation: glitch-in 0.6s ease-out forwards;
+}
+
 @keyframes glitch-in {
     0% { opacity: 0; transform: skewX(20deg) scaleY(1.5); }
     20% { opacity: 1; transform: skewX(-20deg) scaleY(1); }
@@ -1634,6 +1661,7 @@ body.crt-active {
     100% { transform: skewX(0); }
 }
 
+/* Custom "Glitch" Reveal for major headers */
 .reveal-glitch.revealed {
     animation: glitch-in 0.6s ease-out forwards;
 }
