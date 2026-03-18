@@ -1,4 +1,4 @@
-const fetch = require('node-fetch');
+// No external dependencies needed (using Node.js native fetch)
 
 exports.handler = async (event, context) => {
     const REDIS_URL = process.env.UPSTASH_REDIS_REST_URL;
