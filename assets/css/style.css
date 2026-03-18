@@ -14,6 +14,15 @@
     --grid-color: rgba(0, 0, 0, 0.08);
 }
 
+/* Dark Mode Overrides */
+body.dark-mode {
+    --bg-color: #000000;
+    --text-primary: #ffffff;
+    --text-secondary: #cccccc;
+    --accent-light: #1a1a1a;
+    --grid-color: rgba(255, 255, 255, 0.08);
+}
+
 /* Custom Scrollbar Styles */
 ::-webkit-scrollbar {
     width: 10px;
@@ -1622,10 +1631,46 @@ body.crt-active {
     letter-spacing: 0.1em;
 }
 
-/* Section Transitions */
 .section-narrative {
     position: relative;
     z-index: 10;
+}
+
+/* Navbar Theme Toggle */
+.theme-toggle-btn {
+    background: var(--text-primary);
+    color: var(--bg-color);
+    border: 1px solid var(--text-primary);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 1.5rem;
+    transition: all 0.2s ease;
+    border-radius: 4px;
+    padding: 0;
+}
+
+.theme-toggle-btn svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 0 var(--text-primary);
+}
+
+.theme-toggle-btn:hover svg {
+    transform: rotate(15deg);
+}
+
+body.dark-mode .theme-toggle-btn {
+    box-shadow: 0 4px 0 rgba(255,255,255,0.2);
 }
 
 /* --- Scrollytelling & Reveals --- */
@@ -1768,10 +1813,6 @@ body.crt-active {
         flex-direction: column;
         gap: 1.5rem;
         text-align: center;
-    }
-    .footer-hints-container {
-        flex-direction: column;
-        gap: 0.5rem;
     }
 }
 

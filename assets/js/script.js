@@ -214,12 +214,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let activityFeed = null;
     let terminalOverlay = null;
 
-    // Activity Feed (Disabled on Blog)
-    if (!isBlogPage) {
-        activityFeed = document.createElement('div');
-        activityFeed.id = 'activity-feed';
-        body.appendChild(activityFeed);
-    }
 
     // CRT Overlay (Disabled on Blog)
     if (!isBlogPage) {
@@ -247,61 +241,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `;
     body.appendChild(terminalOverlay);
-    }
-
-    // 0. Inject Footer Hint & Log Toggle
-    const footerContent = document.querySelector('.footer-inner');
-    if (footerContent && !isBlogPage) {
-        const container = document.createElement('div');
-        container.className = 'footer-hints-container';
-        container.style.cssText = "display: flex; flex-direction: column; align-items: flex-start; gap: 0.3rem; font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; margin-top: 5px;";
-
-        // CTRL+K Hint Wrapper
-        const hintWrapper = document.createElement('div');
-        hintWrapper.style.cssText = "display: flex; align-items: center; gap: 0.5rem;";
-
-        const hintTitle = document.createElement('span');
-        hintTitle.style.opacity = "0.4";
-        hintTitle.textContent = "SYSTEM SHELL:";
-
-        const hint = document.createElement('span');
-        hint.style.cssText = "opacity: 0.6; border: 1px solid currentColor; padding: 2px 5px; border-radius: 3px;";
-        hint.textContent = 'CTRL + K';
-
-        hintWrapper.appendChild(hintTitle);
-        hintWrapper.appendChild(hint);
-
-        // Log Toggle Text & Button
-        const toggleWrapper = document.createElement('div');
-        toggleWrapper.style.cssText = "display: flex; align-items: center; gap: 0.5rem; opacity: 0.4;";
-
-        const toggleDesc = document.createElement('span');
-        toggleDesc.textContent = "WANT TO SILENCE THE LOGS?";
-
-        const toggleBtn = document.createElement('button');
-        toggleBtn.id = 'log-toggle-btn';
-        toggleBtn.style.cssText = "background: none; border: 1px solid currentColor; color: inherit; font-family: inherit; font-size: inherit; cursor: pointer; padding: 1px 4px; text-transform: uppercase;";
-
-        // Load initial state
-        let logsEnabled = localStorage.getItem('systemLogsEnabled') !== 'false';
-        toggleBtn.textContent = logsEnabled ? 'TURN OFF' : 'TURN ON';
-        if (!logsEnabled) document.getElementById('activity-feed')?.style.setProperty('display', 'none');
-
-        toggleBtn.addEventListener('click', () => {
-            logsEnabled = !logsEnabled;
-            localStorage.setItem('systemLogsEnabled', logsEnabled);
-            toggleBtn.textContent = logsEnabled ? 'TURN OFF' : 'TURN ON';
-
-            const feed = document.getElementById('activity-feed');
-            if (feed) feed.style.display = logsEnabled ? 'flex' : 'none';
-        });
-
-        toggleWrapper.appendChild(toggleDesc);
-        toggleWrapper.appendChild(toggleBtn);
-
-        container.appendChild(hintWrapper);
-        container.appendChild(toggleWrapper);
-        footerContent.appendChild(container);
     }
 
     // 2. Activity Logger Function
@@ -334,32 +273,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Initial OS Boot Logs
-    const initialLogsEnabled = localStorage.getItem('systemLogsEnabled') !== 'false';
-    if (initialLogsEnabled) {
-        logActivity('SYSTEM_BOOT_COMPLETE');
-        logActivity('SECURE_SHELL_INITIALIZED');
-        logActivity('USER_ACCESS_GRANTED');
-        setTimeout(() => logActivity('HINT: PRESS_CTRL+K_FOR_SHELL'), 2000);
-    }
 
-    // Monitor global click events for the activity feed
-    document.addEventListener('click', (e) => {
-        const target = e.target.closest('a, button');
-        if (target) {
-            const label = target.innerText.trim().replace(/\s+/g, '_').toUpperCase() || 'ELEMENT';
-            logActivity(`INTERACTION: CLICK_${label}`);
-        }
-    });
 
-    // Monitor scroll stabilization
-    let scrollTimeout;
-    window.addEventListener('scroll', () => {
-        clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(() => {
-            logActivity(`VIEWPORT_STABILIZED: Y_${window.scrollY}PX`);
-        }, 500);
-    });
 
     // 3. CRT Mode Logic
     function toggleCRT() {
@@ -538,6 +453,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     toggleCRT();
                     printToTerminal('CRT_IMMERSIVE_MODE_TOGGLED_SUCCESS.');
                     break;
+                case 'dark':
+                case 'theme':
+                    toggleDarkMode();
+                    const isDark = document.body.classList.contains('dark-mode');
+                    printToTerminal(`THEME_MODE: ${isDark ? 'PURE_BLACK' : 'CLASSIC_LIGHT'}_INITIATED.`);
+                    break;
                 case 'whoami':
                     printToTerminal('USER: SHASHWAT_KARNA');
                     printToTerminal('PERMISSIONS: ROOT_ADMIN_ACCESS');
@@ -551,14 +472,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     printToTerminal(' - SECURITY: NO_BREACHES_DETECTED');
                     break;
                 case 'logs':
-                    const toggleBtn = document.getElementById('log-toggle-btn');
-                    if (toggleBtn) {
-                        toggleBtn.click();
-                        const isNowOn = localStorage.getItem('systemLogsEnabled') !== 'false';
-                        printToTerminal(`ACTIVITY_FEED: ${isNowOn ? 'ENABLED' : 'DISABLED'}`);
-                    } else {
-                        printToTerminal('ERROR: ACTIVITY_FEED_CONTROLLER_NOT_FOUND.', '#ff0000');
-                    }
+                    const currentState = localStorage.getItem('systemLogsEnabled') !== 'false';
+                    const newState = !currentState;
+                    localStorage.setItem('systemLogsEnabled', newState);
+                    
+                    const feed = document.getElementById('activity-feed');
+                    if (feed) feed.style.display = newState ? 'flex' : 'none';
+                    
+                    printToTerminal(`ACTIVITY_FEED: ${newState ? 'ENABLED' : 'DISABLED'}`);
                     break;
                 case 'konami':
                     printToTerminal('SEARCH_FOR_THE_ANCIENT_SEQUENCE:');
@@ -818,6 +739,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initParallax();
     initMagneticGrid();
     initKonamiCode();
+    initThemeToggle();
 });
 
 // Classical UX Enhancements
@@ -832,4 +754,41 @@ function initMagneticGrid() {
         grid.style.setProperty('--mouse-x', `${x}%`);
         grid.style.setProperty('--mouse-y', `${y}%`);
     }, { passive: true });
+}
+
+// 7. Pure Dark Mode Logic
+const SUN_ICON = `<svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06zm1.06-1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41l-1.06-1.06c-.39-.39-1.03-.39-1.41 0s-.39 1.03 0 1.41l1.06 1.06zm-12.37-12.37c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L4.58 5.99c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>`;
+const MOON_ICON = `<svg viewBox="0 0 24 24"><path d="M12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9c0-.46-.04-.92-.1-1.36-.98 1.37-2.58 2.26-4.4 2.26-3.03 0-5.5-2.47-5.5-5.5 0-1.82.89-3.42 2.26-4.4-.44-.06-.9-.1-1.36-.1z"/></svg>`;
+
+function updateThemeIcon(isDark) {
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+        themeBtn.innerHTML = isDark ? SUN_ICON : MOON_ICON;
+    }
+}
+
+function toggleDarkMode() {
+    const isDark = document.body.classList.toggle('dark-mode');
+    localStorage.setItem('portfolio-theme', isDark ? 'dark' : 'light');
+    updateThemeIcon(isDark);
+    if (typeof logActivity === 'function') {
+        logActivity(`THEME: MODE_SET_TO_${isDark ? 'PURE_BLACK' : 'CLASSIC_LIGHT'}`);
+    }
+}
+
+function initThemeToggle() {
+    const savedTheme = localStorage.getItem('portfolio-theme');
+    const isDark = savedTheme === 'dark';
+    if (isDark) {
+        document.body.classList.add('dark-mode');
+    }
+    updateThemeIcon(isDark);
+
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    if (themeBtn) {
+        themeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            toggleDarkMode();
+        });
+    }
 }
