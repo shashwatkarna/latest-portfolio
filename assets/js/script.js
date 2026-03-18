@@ -155,16 +155,15 @@ function onPlayerStateChange(event) {
 
 // --- Advanced Enhancements Logic ---
 
-// Upstash Redis Configuration (Anonymous Guestbook)
-const REDIS_URL = "https://frank-primate-42451.upstash.io";
-const REDIS_TOKEN = "AaXTAAIncDI1OGQ4MDBiYmRmOGU0ZTVmOTZmODMyYjUzZmU0ZjE5M3AyNDI0NTE";
+// Netlify Function Configuration for Guestbook
+const GUESTBOOK_ENDPOINT = "/.netlify/functions/guestbook";
 
 // Guestbook Functions
 async function loadComments() {
     const list = document.getElementById('guestbook-list');
     if (!list) return;
     try {
-        const res = await fetch(`${REDIS_URL}/lrange/comments/0/49`, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+        const res = await fetch(GUESTBOOK_ENDPOINT);
         const data = await res.json();
         if (data.result) {
             list.innerHTML = data.result.length ? '' : '<div style="font-family: var(--font-body); font-size: 0.8rem; opacity: 0.3; text-align: center;">-- NO_MESSAGES_LOGGED_YET --</div>';
@@ -188,7 +187,10 @@ async function sendComment() {
     const comment = JSON.stringify({ text: input.value.trim(), timestamp: Date.now() });
     btn.disabled = true; btn.textContent = 'TRANSMITTING...';
     try {
-        await fetch(`${REDIS_URL}/lpush/comments/${encodeURIComponent(comment)}`, { headers: { Authorization: `Bearer ${REDIS_TOKEN}` } });
+        await fetch(GUESTBOOK_ENDPOINT, {
+            method: 'POST',
+            body: JSON.stringify({ text: input.value.trim() })
+        });
         input.value = ''; await loadComments();
     } catch (e) { console.error(e); } finally { btn.disabled = false; btn.textContent = 'Transmit \u2192'; }
 }
