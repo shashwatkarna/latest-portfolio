@@ -132,28 +132,10 @@
 
     </main>
 
-    <!-- Secret Personal Section -->
-    <section id="secret-section">
-        <div class="container">
-            
-            <div id="secret-locked-content" style="text-align: center; margin: 2rem 0; opacity: 0.9;">
-                <h2 style="font-family: 'JetBrains Mono', monospace; font-size: 1.5rem; color: #ff0000; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; text-decoration: line-through;">NOT AVAILABLE</h2>
-                <div>
-                    <input type="password" id="secret-mini-key" autocomplete="off" spellcheck="false" style="width: 15rem; text-align: center; background: transparent; border: none; border-bottom: 1px solid rgba(255,255,255,0.2); color: #00ff00; outline: none; font-family: 'JetBrains Mono', monospace; font-size: 1.2rem; padding: 5px;">
-                </div>
-            </div>
-
-            <div id="secret-unlocked-content" style="display: none;">
-                <!-- OBFUSCATED_PAYLOAD_WILL_MOUNT_HERE -->
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-inner">
-            <p>Built with <span class="heart-icon">&hearts;</span> &amp; <span class="coffee-icon">&#9749;</span> by
-                Shashwat</p>
+            <p>Built with <span class="heart-icon">&hearts;</span> &amp; <span class="coffee-icon">&#9749;</span> by Shashwat</p>
             <div class="social-links">
                 <a href="https://linkedin.com/in/shashwatkarna/" class="social-link" target="_blank">IN</a>
                 <a href="https://github.com/shashwatkarna" class="social-link" target="_blank">GH</a>
@@ -161,6 +143,10 @@
                 <a href="https://peerlist.io/shashwhat" class="social-link" target="_blank">PR</a>
                 <a href="https://tryhackme.com/p/shashwatkarna" class="social-link" target="_blank">THM</a>
             </div>
+        </div>
+        
+        <div class="secret-trigger-container" style="margin-top: 0.75rem; display: flex; justify-content: center; width: 100%;">
+            <button id="secret-trigger" class="secret-trigger" style="background: transparent; border: none; color: var(--text-primary); font-family: var(--font-body); font-size: 0.7rem; opacity: 0.5; cursor: pointer; text-transform: uppercase; letter-spacing: 2px;">ACCESS_LOGS //</button>
         </div>
     </footer>
 
