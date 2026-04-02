@@ -7,3 +7,4 @@ docs/resume_text.txt
 
 # Secrets
 .env
+.env.example
