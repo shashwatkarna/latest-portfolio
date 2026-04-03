@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initKonamiCode();
     initSecretSection();
     initTitleCycling();
+    initAntiInspect();
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -30,8 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // --- Secret Section Module (Dynamic Obfuscation) ---
 function initSecretSection() {
     const trigger = document.getElementById('secret-trigger');
+    // Only allow the secret section on pages that actually have the trigger (About page)
+    if (!trigger) return;
+
     const SECRET_KEY = "SHASHWAT03";
-    
+
     // Payload 1: Entire Section Structure (Locked state)
     const structurePayload = "PHNlY3Rpb24gaWQ9InNlY3JldC1zZWN0aW9uIj48ZGl2IGNsYXNzPSJjb250YWluZXIiPjxkaXYgaWQ9InNlY3JldC1sb2NrZWQtY29udGVudCIgc3R5bGU9InRleHQtYWxpZ246IGNlbnRlcjsgbWFyZ2luOiAycmVtIDA7IG9wYWNpdHk6IDAuOTsiPjxoMiBzdHlsZT0iZm9udC1mYW1pbHk6ICdKZXRCcmFpbnMgTW9ubycsIG1vbm9zcGFjZTsgZm9udC1zaXplOiAxLjVyZW07IGNvbG9yOiAjZmYwMDAwOyB0ZXh0LXRyYW5zZm9ybTogdXBwZXJjYXNlOyBsZXR0ZXItc3BhY2luZzogMnB4OyBtYXJnaW4tYm90dG9tOiAxcmVtOyB0ZXh0LWRlY29yYXRpb246IGxpbmUtdGhyb3VnaDsiPk5PVCBBVkFJTEFCTEU8L2gyPjxkaXY+PGlucHV0IHR5cGU9InBhc3N3b3JkIiBpZD0ic2VjcmV0LW1pbmkta2V5IiBhdXRvY29tcGxldGU9Im9mZiIgc3BlbGxjaGVjaz0iZmFsc2UiIHN0eWxlPSJ3aWR0aDogMTVyZW07IHRleHQtYWxpZ246IGNlbnRlcjsgYmFja2dyb3VuZDogdHJhbnNwYXJlbnQ7IGJvcmRlcjogbm9uZTsgYm9yZGVyLWJvdHRvbTogMXB4IHNvbGlkIHJnYmEoMjU1LDI1NSwyNTUsMC4yKTsgY29sb3I6ICMwMGZmMDA7IG91dGxpbmU6IG5vbmU7IGZvbnQtZmFtaWx5OiAnSmV0QnJhaW5zIE1vbm8nLCBtb25vc3BhY2U7IGZvbnQtc2l6ZTogMS4ycmVtOyBwYWRkaW5nOiA1cHg7Ij48L2Rpdj48L2Rpdj48ZGl2IGlkPSJzZWNyZXQtdW5sb2NrZWQtY29udGVudCIgc3R5bGU9ImRpc3BsYXk6IG5vbmU7Ij48L2Rpdj48L2Rpdj48L3NlY3Rpb24+";
 
@@ -40,13 +44,27 @@ function initSecretSection() {
             const wrapper = document.createElement('div');
             wrapper.innerHTML = atob(structurePayload);
             const sectionNode = wrapper.firstChild;
+
+            // Add a dynamic Close / Lock button
+            const closeBtn = document.createElement('button');
+            closeBtn.innerText = '[X] SECURE & CLOSE';
+            closeBtn.style.cssText = 'position: absolute; top: 2rem; right: clamp(1rem, 5vw, 4rem); background: transparent; border: 1px solid #ff0000; padding: 0.5rem 1rem; color: #ff0000; font-family: var(--font-body); font-size: 0.7rem; cursor: pointer; letter-spacing: 2px; z-index: 100; transition: all 0.3s ease;';
+            closeBtn.onmouseenter = () => { closeBtn.style.background = '#ff0000'; closeBtn.style.color = '#000'; };
+            closeBtn.onmouseleave = () => { closeBtn.style.background = 'transparent'; closeBtn.style.color = '#ff0000'; };
+            closeBtn.addEventListener('click', () => {
+                sectionNode.classList.remove('active');
+                setTimeout(() => sectionNode.remove(), 1200); // Remove from DOM after CSS transition
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            });
+            sectionNode.appendChild(closeBtn);
+
             document.body.appendChild(sectionNode);
-            
+
             const input = document.getElementById('secret-mini-key');
             input?.addEventListener('input', (e) => checkPassword(e.target.value));
             input?.addEventListener('paste', (e) => checkPassword(e.clipboardData.getData('text')));
         }
-        
+
         const section = document.getElementById('secret-section');
         // Small delay to ensure CSS transition triggers properly after injection
         requestAnimationFrame(() => {
@@ -60,7 +78,6 @@ function initSecretSection() {
 
     const checkPassword = (val) => {
         if (val.trim().toUpperCase() === SECRET_KEY) {
-            sessionStorage.setItem('secret_unlocked', 'true');
             renderSecretContent();
         }
     };
@@ -78,17 +95,10 @@ function initSecretSection() {
         initVibePlayer();
     }
 
-    if (trigger) {
-        trigger.addEventListener('click', (e) => {
-            e.preventDefault();
-            injectAndReveal();
-        });
-    }
-
-    if (sessionStorage.getItem('secret_unlocked') === 'true') {
+    trigger.addEventListener('click', (e) => {
+        e.preventDefault();
         injectAndReveal();
-        renderSecretContent();
-    }
+    });
 }
 
 // --- Title Cycling (Synonyms) ---
@@ -118,6 +128,11 @@ function initTitleCycling() {
     });
 }
 
+// --- Anti-Inspect Security ---
+function initAntiInspect() {
+    eval(atob('ZG9jdW1lbnQuYWRkRXZlbnRMaXN0ZW5lcignY29udGV4dG1lbnUnLCAoZSkgPT4geyBpZiAoZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3NlY3JldC1zZWN0aW9uJykgfHwgc2Vzc2lvblN0b3JhZ2UuZ2V0SXRlbSgnc2VjcmV0X3VubG9ja2VkJykgPT09ICd0cnVlJykgeyBlLnByZXZlbnREZWZhdWx0KCk7IH0gfSk7IGRvY3VtZW50LmFkZEV2ZW50TGlzdGVuZXIoJ2tleWRvd24nLCAoZSkgPT4geyBpZiAoZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoJ3NlY3JldC1zZWN0aW9uJykgfHwgc2Vzc2lvblN0b3JhZ2UuZ2V0SXRlbSgnc2VjcmV0X3VubG9ja2VkJykgPT09ICd0cnVlJykgeyBpZiAoIGUua2V5ID09PSAnRjEyJyB8fCAoZS5jdHJsS2V5ICYmIGUuc2hpZnRLZXkgJiYgWydJJywgJ0onLCAnQycsICdpJywgJ2onLCAnYyddLmluY2x1ZGVzKGUua2V5KSkgfHwgKGUuY3RybEtleSAmJiBbJ1UnLCAndSddLmluY2x1ZGVzKGUua2V5KSkgfHwgKGUubWV0YUtleSAmJiBlLmFsdEtleSAmJiBbJ0knLCAnSicsICdDJywgJ2knLCAnaicsICdjJ10uaW5jbHVkZXMoZS5rZXkpKSB8fCAoZS5tZXRhS2V5ICYmIFsnVScsICd1J10uaW5jbHVkZXMoZS5rZXkpKSApIHsgZS5wcmV2ZW50RGVmYXVsdCgpOyB9IH0gfSk7'));
+}
+
 // --- Video Player (YouTube API) ---
 let vibePlayer;
 function initVibePlayer() {
@@ -125,7 +140,7 @@ function initVibePlayer() {
     const stopBtn = document.getElementById('stop-btn');
     const status = document.getElementById('player-status');
     if (!playBtn || !stopBtn) return;
-    window.onYouTubeIframeAPIReady = function() {
+    window.onYouTubeIframeAPIReady = function () {
         vibePlayer = new YT.Player('player', {
             height: '0', width: '0', videoId: 'jfKfPfyJRdk',
             playerVars: { 'autoplay': 0, 'controls': 0 },
@@ -217,8 +232,8 @@ function initParallax() {
 
 function initMagneticGrid() {
     window.addEventListener('mousemove', (e) => {
-        document.querySelector('.grid-bg')?.style.setProperty('--mouse-x', `${(e.clientX/window.innerWidth)*100}%`);
-        document.querySelector('.grid-bg')?.style.setProperty('--mouse-y', `${(e.clientY/window.innerHeight)*100}%`);
+        document.querySelector('.grid-bg')?.style.setProperty('--mouse-x', `${(e.clientX / window.innerWidth) * 100}%`);
+        document.querySelector('.grid-bg')?.style.setProperty('--mouse-y', `${(e.clientY / window.innerHeight) * 100}%`);
     }, { passive: true });
 }
 
@@ -240,9 +255,9 @@ async function loadComments() {
         const data = await res.json();
         list.innerHTML = data.result ? data.result.map(raw => {
             const c = JSON.parse(raw);
-            return `<div class="card border shadow" style="padding:1.2rem;"><div style="font-size:0.7rem;opacity:0.4;">${new Date(c.timestamp).toLocaleDateString()}</div><div>${c.text.replace(/</g,"&lt;")}</div></div>`;
+            return `<div class="card border shadow" style="padding:1.2rem;"><div style="font-size:0.7rem;opacity:0.4;">${new Date(c.timestamp).toLocaleDateString()}</div><div>${c.text.replace(/</g, "&lt;")}</div></div>`;
         }).join('') : '';
-    } catch (e) {}
+    } catch (e) { }
 }
 
 async function sendComment() {
@@ -251,5 +266,5 @@ async function sendComment() {
     try {
         await fetch(GUESTBOOK_ENDPOINT, { method: 'POST', body: JSON.stringify({ text: input.value.trim() }) });
         input.value = ''; loadComments();
-    } catch (e) {}
+    } catch (e) { }
 }
