@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initMagneticGrid();
     initKonamiCode();
     initSecretSection();
+    initTitleCycling();
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -77,15 +78,44 @@ function initSecretSection() {
         initVibePlayer();
     }
 
-    trigger.addEventListener('click', (e) => {
-        e.preventDefault();
-        injectAndReveal();
-    });
+    if (trigger) {
+        trigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            injectAndReveal();
+        });
+    }
 
     if (sessionStorage.getItem('secret_unlocked') === 'true') {
         injectAndReveal();
         renderSecretContent();
     }
+}
+
+// --- Title Cycling (Synonyms) ---
+function initTitleCycling() {
+    document.querySelectorAll('.cycling-title').forEach(el => {
+        const originalText = el.innerText;
+        const synonyms = JSON.parse(el.getAttribute('data-synonyms') || '[]');
+        const triggerEl = el.closest('.card, #writing-btn') || el;
+        let cycleInterval;
+        let index = 0;
+
+        if (synonyms.length === 0) return;
+
+        triggerEl.addEventListener('mouseenter', () => {
+            clearInterval(cycleInterval);
+            cycleInterval = setInterval(() => {
+                index = (index + 1) % synonyms.length;
+                el.innerText = synonyms[index];
+            }, 400);
+        });
+
+        triggerEl.addEventListener('mouseleave', () => {
+            clearInterval(cycleInterval);
+            el.innerText = originalText;
+            index = 0;
+        });
+    });
 }
 
 // --- Video Player (YouTube API) ---
