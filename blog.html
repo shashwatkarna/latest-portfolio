@@ -14,18 +14,20 @@
     <!-- Grid Background -->
     <div class="grid-bg"></div>
 
-    <!-- Simple Back Link -->
-    <div style="padding: 2rem clamp(1rem, 5vw, 4rem); font-family: var(--font-heading); font-weight: bold; font-size: 0.9rem;">
-        <a href="index.html" style="text-decoration: none; color: var(--text-primary); border: 1px solid var(--text-primary); padding: 5px 10px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--text-primary)'; this.style.color='var(--bg-color)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-primary)'">&larr; BACK_TO_HOME</a>
+    <nav class="navbar">
+        <div class="nav-logo">
+            <a href="index.html" style="text-decoration: none; color: inherit; display: flex; align-items: center; gap: 0.5rem;">
+                <span class="icon-terminal">&larr;</span>
+                <span class="logo-text">BACK_TO_HOME</span>
+            </a>
+        </div>
         <div style="display: flex; align-items: center; gap: 1rem;">
-            <a href="resume.html" style="text-decoration: none; color: var(--text-primary); border: 1px solid var(--text-primary); padding: 5px 10px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--text-primary)'; this.style.color='var(--bg-color)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-primary)'">RESUME</a>
-            <a href="contact.html" style="text-decoration: none; color: var(--text-primary); border: 1px solid var(--text-primary); padding: 5px 10px; transition: all 0.3s ease;" onmouseover="this.style.background='var(--text-primary)'; this.style.color='var(--bg-color)'" onmouseout="this.style.background='transparent'; this.style.color='var(--text-primary)'">CONTACT</a>
-            <button id="theme-toggle-btn" class="theme-toggle-btn"></button>
+            <button id="theme-toggle-btn" class="theme-toggle-btn" style="margin-right: 0;"></button>
         </div>
     </nav>
 
     <!-- Main Content -->
-    <main class="container page-transition" style="animation: page-enter 0.6s cubic-bezier(0.87, 0, 0.13, 1) forwards; padding-top: 0;">
+    <main class="container page-transition" style="animation: page-enter 0.6s cubic-bezier(0.87, 0, 0.13, 1) forwards;">
         
         <section style="margin-bottom: 3rem;">
             <div class="section-header">
@@ -40,42 +42,42 @@
 
         <section class="projects-grid" style="margin-bottom: 2rem;">
             
-            <!-- Example Blog Post Component - Minimalist Version -->
-            <article class="project-card border shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+            <!-- Example Blog Post Component -->
+            <article class="project-card border shadow-hover" style="padding: 2rem;">
                 <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
                     Building a Brutalist Portfolio
                 </h3>
-                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 25px; line-height: 1.6; opacity: 0.8;">
                     Returning to pure HTML/CSS to stand out in a sea of identical templates. Minimalism as a technical choice.
                 </p>
                 <div class="project-links">
-                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                    <a href="#" class="project-link">READ_TRANSCRIPT &rarr;</a>
                 </div>
             </article>
 
             <!-- Blog Post 2 - Live -->
-            <article class="project-card border shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+            <article class="project-card border shadow-hover" style="padding: 2rem;">
                 <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
                     The Ghost in the Machine
                 </h3>
-                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 25px; line-height: 1.6; opacity: 0.8;">
                     Analyzing the psychological impact of lo-fi aesthetics on developer productivity and creative flow.
                 </p>
                 <div class="project-links">
-                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                    <a href="#" class="project-link">READ_TRANSCRIPT &rarr;</a>
                 </div>
             </article>
 
             <!-- Blog Post 3 - Live -->
-            <article class="project-card border shadow-hover" style="display: flex; flex-direction: column; background: transparent; padding: 2rem;">
+            <article class="project-card border shadow-hover" style="padding: 2rem;">
                 <h3 style="font-family: var(--font-heading); font-size: 1.5rem; margin-bottom: 1rem; text-transform: uppercase;">
                     Zero-Dependency Design
                 </h3>
-                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 2rem; line-height: 1.6;">
+                <p style="font-family: var(--font-body); font-size: 0.9rem; flex-grow: 1; margin-bottom: 25px; line-height: 1.6; opacity: 0.8;">
                     A deep dive into building modular, interactive UI components using only vanilla Javascript and CSS variables.
                 </p>
                 <div class="project-links">
-                    <a href="#" style="font-family: var(--font-heading); font-weight: bold; font-size: 0.8rem; text-decoration: none; color: var(--text-primary); border-bottom: 2px solid var(--text-primary); padding-bottom: 4px;">READ_TRANSCRIPT &rarr;</a>
+                    <a href="#" class="project-link">READ_TRANSCRIPT &rarr;</a>
                 </div>
             </article>
 

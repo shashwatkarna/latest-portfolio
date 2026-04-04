@@ -164,7 +164,20 @@ function initUIComponents() {
         if (!document.getElementById('terminal-overlay')) {
             const term = document.createElement('div');
             term.id = 'terminal-overlay';
-            term.innerHTML = `<div class="terminal-header"><div>SHASHWAT_OS [VERSION 1.0.42]</div><div>(C) 2026 SHASHWAT. ALL RIGHTS RESERVED.</div><div style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">TYPE 'HELP' FOR COMMANDS // 'CTRL+K' TO TOGGLE</div></div><div id="terminal-output"><div>WELCOME TO THE CORE SHELL. TYPE 'HELP' TO START.</div></div><div class="terminal-input-line"><span>></span><input type="text" id="terminal-input" autofocus spellcheck="false"></div>`;
+            term.innerHTML = `
+                <div class="terminal-header">
+                    <div>SHASHWAT_OS [VERSION 1.0.42]</div>
+                    <div>(C) 2026 SHASHWAT. ALL RIGHTS RESERVED.</div>
+                    <div style="margin-top: 0.5rem; font-size: 0.8rem; opacity: 0.7;">TYPE 'HELP' FOR COMMANDS // 'ESC' TO EXIT</div>
+                </div>
+                <div id="terminal-output">
+                    <div>WELCOME TO THE CORE SHELL.</div>
+                </div>
+                <div class="terminal-input-line">
+                    <span>></span>
+                    <input type="text" id="terminal-input" autofocus spellcheck="false">
+                </div>
+            `;
             document.body.appendChild(term);
             initTerminalLogic();
         }
@@ -176,21 +189,110 @@ function initTerminalLogic() {
     const termInput = document.getElementById('terminal-input');
     const termOutput = document.getElementById('terminal-output');
     if (!termInput || !termOutput) return;
+
     const print = (text, color = '#00ff00') => {
-        const div = document.createElement('div'); div.style.color = color; div.innerHTML = text;
-        termOutput.appendChild(div); termOutput.scrollTop = termOutput.scrollHeight;
+        const div = document.createElement('div');
+        div.style.color = color;
+        div.innerHTML = text;
+        termOutput.appendChild(div);
+        termOutput.scrollTop = termOutput.scrollHeight;
     };
+
     document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey && e.key === 'k') { e.preventDefault(); termOverlay.classList.toggle('active'); if (termOverlay.classList.contains('active')) termInput.focus(); }
+        if (e.ctrlKey && e.key === 'k') {
+            e.preventDefault();
+            termOverlay.classList.toggle('active');
+            if (termOverlay.classList.contains('active')) termInput.focus();
+        }
         if (e.key === 'Escape') termOverlay.classList.remove('active');
     });
+
     termInput.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
-            const cmd = termInput.value.trim().toLowerCase(); termInput.value = ''; print(`> ${cmd}`, '#555');
-            const routes = { 'help': 'AVAILABLE: LS, CLEAR, EXIT, DATE, STATUS, WHOAMI, GOTO', 'ls': 'DRV_C_ROOT: index.html, about.html, projects.html, resume.html, contact.html', 'date': new Date().toLocaleString(), 'status': 'SYSTEM: STABLE', 'whoami': 'USER: SHASHWAT_KARNA', 'clear': 'CLEAR', 'exit': 'EXIT' };
-            if (routes[cmd]) { if (cmd === 'clear') termOutput.innerHTML = ''; else if (cmd === 'exit') termOverlay.classList.remove('active'); else print(routes[cmd]); }
-            else if (cmd.startsWith('goto ')) { const p = cmd.split(' ')[1]; print(`NAVIGATING TO ${p.toUpperCase()}...`); setTimeout(() => window.location.href = p.endsWith('.html') ? p : `${p}.html`, 500); }
-            else print(`COMMAND NOT FOUND: ${cmd}`, '#ff0000');
+            const cmdInput = termInput.value.trim();
+            const cmd = cmdInput.toLowerCase();
+            termInput.value = '';
+            print(`> ${cmdInput}`, '#555');
+
+            if (cmd === 'help') {
+                print('AVAILABLE_SYSTEM_COMMANDS:');
+                print('- LS: LIST_S_FILES');
+                print('- CAT [FILE]: READ_S_FILE');
+                print('- GOTO [PAGE]: NAVIGATE_SYSTEM');
+                print('- SKILLS: FETCH_TECH_STACK');
+                print('- SOCIAL: LIST_COMM_LINKS');
+                print('- DATE: SHOW_SYSTEM_TIME');
+                print('- CRT: TOGGLE_IMMERSIVE_MODE');
+                print('- STATUS: SYSTEM_INTEGRITY_CHECK');
+                print('- LOGS: TOGGLE_ACTIVITY_FEED');
+                print('- KONAMI: SHOW_SECRET_HINT');
+                print('- WHOAMI: DISPLAY_IDENTITY');
+                print('- CLEAR: PURGE_OUTPUT');
+                print('- EXIT: DISCONNECT');
+            } else if (cmd === 'ls') {
+                print('DRV_C_ROOT_DIRECTORY_LISTING:');
+                print('MODE SIZE DATE NAME', '#aaa');
+                print('---- ---- ---- ----', '#aaa');
+                print('dir - MAR_07_2026 assets/');
+                print('dir - MAR_07_2026 docs/');
+                print('-r-- 8.6KB MAR_07_2026 index.html');
+                print('-r-- 13.1KB MAR_07_2026 about.html');
+                print('-r-- 7.4KB MAR_07_2026 projects.html');
+                print('-r-- 8.8KB MAR_07_2026 resume.html');
+                print('-r-- 8.4KB MAR_07_2026 blog.html');
+                print('-r-- 5.8KB MAR_07_2026 contact.html');
+                print('---------------------------', '#aaa');
+                print('USE "LS [DIR]" TO VIEW SUBDIRECTORIES.');
+            } else if (cmd === 'social') {
+                print('### COMMUNICATIONS_NETWORK_MAP:');
+                print('- GITHUB: <a href="https://github.com/shashwatkarna" target="_blank" style="color:inherit;">github.com/shashwatkarna</a>');
+                print('- LINKEDIN: <a href="https://linkedin.com/in/shashwatkarna" target="_blank" style="color:inherit;">linkedin.com/in/shashwatkarna</a>');
+                print('- TRYHACKME: <a href="https://tryhackme.com/p/shashwatkarna" target="_blank" style="color:inherit;">tryhackme.com/p/shashwatkarna</a>');
+                print('- LEETCODE: <a href="https://leetcode.com/u/intervuln/" target="_blank" style="color:inherit;">leetcode.com/u/intervuln/</a>');
+                print('- PEERLIST: <a href="https://peerlist.io/shashwhat" target="_blank" style="color:inherit;">peerlist.io/shashwhat</a>');
+                print('- INSTAGRAM: <a href="https://instagram.com/karn_shashwat" target="_blank" style="color:inherit;">instagram.com/karn_shashwat</a>');
+                print('- SNAPCHAT: <a href="https://snapchat.com/add/shashhh03" target="_blank" style="color:inherit;">snapchat.com/add/shashhh03</a>');
+                print('- TWITTER/X: <a href="https://x.com/shashwat_karna" target="_blank" style="color:inherit;">x.com/shashwat_karna</a>');
+            } else if (cmd === 'skills') {
+                print('### TECHNICAL_STACK_MATRIX:');
+                print('- FRONTEND: HTML5, CSS3, JS (ES6+), REACT, VITE');
+                print('- BACKEND: NODE.JS, EXPRESS, PYTHON, FLASK');
+                print('- DATABASE: MONGODB, FIREBASE, SQL');
+                print('- TOOLS: GIT, DOCKER, NETLIFY, VERCEL');
+                print('- ART: FIGMA, ADOBE SUITE, BLENDER');
+            } else if (cmd === 'status') {
+                print('SYSTEM_INTEGRITY: 100% // ALL_NODES_OPERATIONAL');
+            } else if (cmd === 'whoami') {
+                print('IDENTITY: SHASHWAT_KARNA // FULL_STACK_DEV // AI_ENTHUSIAST');
+            } else if (cmd === 'date') {
+                print(new Date().toLocaleString());
+            } else if (cmd === 'clear') {
+                termOutput.innerHTML = '';
+            } else if (cmd === 'crt') {
+                const crt = document.getElementById('crt-overlay');
+                if (crt) {
+                    crt.style.display = crt.style.display === 'none' ? 'block' : 'none';
+                    print(`CRT_MODE: ${crt.style.display === 'none' ? 'DEACTIVATED' : 'ACTIVE'}`);
+                }
+            } else if (cmd === 'exit') {
+                termOverlay.classList.remove('active');
+            } else if (cmd.startsWith('goto ')) {
+                const target = cmd.split(' ')[1];
+                print(`INITIATING_HANDSHAKE_WITH_${target.toUpperCase()}...`);
+                setTimeout(() => {
+                    const pages = ['index', 'about', 'projects', 'resume', 'blog', 'contact'];
+                    if (pages.includes(target)) {
+                        window.location.href = `${target}.html`;
+                    } else {
+                        print(`ERR: HOST_${target.toUpperCase()} UNREACHABLE.`, '#ff0000');
+                    }
+                }, 800);
+            } else if (cmd.startsWith('cat ')) {
+                print(`READING_FILE: ${cmd.split(' ')[1]}...`);
+                print('ERROR: PERMISSION_DENIED. SUDO_REQUIRED.', '#ff0000');
+            } else if (cmd !== '') {
+                print(`CRITICAL_ERROR: COMMAND_${cmd.toUpperCase()}_NOT_FOUND. TYPE 'HELP'.`, '#ff0000');
+            }
         }
     });
 }
