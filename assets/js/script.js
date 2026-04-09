@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSecretSection();
     initTitleCycling();
     initAntiInspect();
+    initMobileMenu();
 
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
@@ -369,4 +370,26 @@ async function sendComment() {
         await fetch(GUESTBOOK_ENDPOINT, { method: 'POST', body: JSON.stringify({ text: input.value.trim() }) });
         input.value = ''; loadComments();
     } catch (e) { }
+}
+
+function initMobileMenu() {
+    const toggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelector('.nav-links');
+    const links = document.querySelectorAll('.nav-links a');
+
+    if (!toggle || !navLinks) return;
+
+    toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : '';
+    });
+
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            toggle.classList.remove('active');
+            navLinks.classList.remove('active');
+            document.body.style.overflow = '';
+        });
+    });
 }
