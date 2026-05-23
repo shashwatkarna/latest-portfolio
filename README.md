@@ -1,4 +1,4 @@
-# Retro Brutalist Portfolio
+# Shashwat Karna Portfolio 
 
 A modern, high-performance portfolio website with a "classical" retro/brutalist aesthetic. Built with pure HTML, Vanilla CSS, and JavaScript.
 
