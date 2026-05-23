@@ -353,22 +353,13 @@ function initHeroAnimation() {
     if (images.length <= 1) return;
     
     let currentIndex = 0;
-    let cycleInterval;
 
-    frame.addEventListener('mouseenter', () => {
-        cycleInterval = setInterval(() => {
-            images[currentIndex].classList.remove('active');
-            currentIndex = (currentIndex + 1) % images.length;
-            images[currentIndex].classList.add('active');
-        }, 2000);
-    });
-
-    frame.addEventListener('mouseleave', () => {
-        clearInterval(cycleInterval);
-        images.forEach(img => img.classList.remove('active'));
-        currentIndex = 0;
-        images[0].classList.add('active');
-    });
+    // Cycle automatically
+    setInterval(() => {
+        images[currentIndex].classList.remove('active');
+        currentIndex = (currentIndex + 1) % images.length;
+        images[currentIndex].classList.add('active');
+    }, 2500);
 }
 
 function initScrollyteller() {
