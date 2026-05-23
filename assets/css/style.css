@@ -800,6 +800,24 @@ h6,
     color: var(--bg-color);
 }
 
+.social-icon img, .social-link img {
+    width: 20px;
+    height: 20px;
+    transition: filter 0.3s ease;
+}
+
+body.dark-mode .social-icon img.invert-on-dark, body.dark-mode .social-link img.invert-on-dark {
+    filter: invert(1);
+}
+
+.social-icon:hover img.invert-on-dark, .social-link:hover img.invert-on-dark {
+    filter: invert(1);
+}
+
+body.dark-mode .social-icon:hover img.invert-on-dark, body.dark-mode .social-link:hover img.invert-on-dark {
+    filter: invert(0);
+}
+
 .contact-form-container {
     flex: 1;
 }
