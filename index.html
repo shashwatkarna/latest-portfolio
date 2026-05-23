@@ -53,7 +53,7 @@
         rel="stylesheet">
 </head>
 
-<body>
+<body class="dark-mode">
     <!-- Grid Background -->
     <div class="grid-bg"></div>
 
@@ -112,9 +112,12 @@
                 </div>
             </div>
 
-            <div class="portrait-frame border shadow">
-                <div class="frame-inner border">
-                    <img src="assets/img/profile.jpg" alt="Shashwat Karna - Portrait" class="portrait" loading="eager" decoding="async">
+            <div class="portrait-frame border shadow" id="hero-portrait-frame">
+                <div class="frame-inner border" id="hero-frame-inner">
+                    <img src="assets/img/pic1.jpg" alt="Shashwat Karna - Portrait 1" class="portrait active" loading="eager" decoding="async">
+                    <img src="assets/img/pic2.jpg" alt="Shashwat Karna - Portrait 2" class="portrait" loading="lazy" decoding="async">
+                    <img src="assets/img/pic3.jpg" alt="Shashwat Karna - Portrait 3" class="portrait" loading="lazy" decoding="async">
+                    <img src="assets/img/pic4.jpg" alt="Shashwat Karna - Portrait 4" class="portrait" loading="lazy" decoding="async">
                 </div>
                 <!-- Frame Decoration -->
                 <div class="frame-crosshair top-right"></div>
@@ -170,7 +173,10 @@
         <section id="selected-projects" class="section">
             <div class="projects-header">
                 <h2 class="projects-title"><span class="highlight">SELECTED</span> PROJECTS</h2>
-                <a href="projects.html" class="view-all-link">VIEW ALL <span>&rarr;</span></a>
+                <div style="display: flex; gap: 1rem; align-items: center;">
+                    <a href="https://github.com/shashwatkarna?tab=repositories" class="view-all-link" target="_blank">SEE MORE ON GITHUB <span>&rarr;</span></a>
+                    <a href="projects.html" class="view-all-link">VIEW ALL <span>&rarr;</span></a>
+                </div>
             </div>
 
             <div class="projects-grid">
