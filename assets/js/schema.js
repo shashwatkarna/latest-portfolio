@@ -35,7 +35,7 @@ const schemaData = {
       "@type": "WebSite",
       "@id": "https://shashwatkarna.netlify.app/#website",
       "url": "https://shashwatkarna.netlify.app/",
-      "name": "Shashwat Karna | AI Engineer & Full-Stack Developer",
+      "name": "Shashwat Karna",
       "description": "Portfolio of Shashwat Karna - B.Tech IT student, AI Engineer, and Full-Stack Developer. Showcasing projects in Machine Learning, Computer Vision, and Web Applications.",
       "publisher": {
         "@id": "https://shashwatkarna.netlify.app/#person"
