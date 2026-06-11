@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shashwat | Playground</title>
+    <link rel="stylesheet" href="assets/css/playground.css">
+    <link rel="icon" type="image/png" href="https://wsrv.nl/?url=shashwatkarna.netlify.app/assets/img/favicon.png&output=webp&w=64">
+</head>
+<body>
+
+    <!-- Back to main site -->
+    <a href="index.html" class="back-btn">← Back to Main Portfolio</a>
+
+    <div class="bento-container">
+        
+        <!-- Profile Card -->
+        <div class="bento-card card-profile">
+            <img src="https://wsrv.nl/?url=shashwatkarna.netlify.app/assets/img/profile.jpg&output=webp&w=200" alt="Shashwat Karna" class="profile-img">
+            <h1 class="profile-name">Shashwat Karna</h1>
+            <p class="profile-bio">AI Engineer & Full-Stack Developer</p>
+        </div>
+
+        <!-- Drawing Canvas -->
+        <div class="bento-card card-canvas">
+            <div class="canvas-header">
+                <span>Doodle Box 🎨</span>
+                <button class="btn-clear" id="clear-canvas">Clear</button>
+            </div>
+            <canvas id="drawing-canvas"></canvas>
+        </div>
+
+        <!-- Links Card -->
+        <div class="bento-card card-links">
+            <a href="https://github.com/shashwatkarna" target="_blank" class="link-btn">GitHub</a>
+            <a href="https://linkedin.com/in/shashwatkarna" target="_blank" class="link-btn">LinkedIn</a>
+            <a href="resume.html" class="link-btn">Resume</a>
+        </div>
+
+        <!-- Pet Counter -->
+        <div class="bento-card card-pet" id="pet-card">
+            <div class="pet-emoji" id="pet-emoji">🐶</div>
+            <div class="pet-text">Pet the dog!</div>
+            <div class="pet-count" id="pet-count">0</div>
+        </div>
+
+        <!-- Music Player -->
+        <div class="bento-card card-music">
+            <div class="music-info">
+                <span class="music-title">Chill Lofi Beats 🎧</span>
+                <span class="music-artist">To code & relax to</span>
+            </div>
+            <div class="music-controls">
+                <button id="play-btn">▶</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Playground JS -->
+    <script src="assets/js/playground.js"></script>
+    
+    <!-- We still want our dogs! -->
+    <script src="assets/js/dog.js"></script>
+</body>
+</html>

@@ -7,7 +7,20 @@ exports.handler = async (event, context) => {
         const body = JSON.parse(event.body);
         const password = body.password;
 
-        if (password === 'SHASHWAT03') {
+        // Fetch the expected password from Netlify Environment Variables
+        const expectedPassword = process.env.SECRET_ACCESS_KEY;
+
+        // If the environment variable is not set, fail securely
+        if (!expectedPassword) {
+            console.error("CRITICAL: SECRET_ACCESS_KEY environment variable is not set in Netlify.");
+            return {
+                statusCode: 500,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ success: false, error: 'Server configuration error' })
+            };
+        }
+
+        if (password === expectedPassword) {
             const secretHtml = `
 <div class="photography-gallery" style="margin-top: 1.5rem;">
     <div class="section-header">
